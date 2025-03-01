@@ -8,8 +8,8 @@ from fetch_news import get_top_bbc_news
 from extract_keywords import extract_keywords
 
 def create_message():
-    """BBC 뉴스에서 데이터를 가져와 학습 메시지를 생성"""
-    news = get_top_bbc_news()
+    """CNN 뉴스에서 데이터를 가져와 학습 메시지를 생성"""
+    news = get_top_cnn_news()
     if not news:
         return "오늘의 뉴스 기사를 가져오지 못했습니다."
 

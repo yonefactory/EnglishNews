@@ -1,0 +1,25 @@
+name: Telegram English Study - Test Mode
+
+on:
+  workflow_dispatch:  # 수동 실행 트리거
+
+jobs:
+  send-test-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Telegram Test Mode Script
+        run: python test_mode.py
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

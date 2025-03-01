@@ -20,4 +20,4 @@ def determine_messages_to_send():
 if __name__ == "__main__":
     messages = determine_messages_to_send()
     for msg in messages:
-        send_message(msg
+        send_message(msg)

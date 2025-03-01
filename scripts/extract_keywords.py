@@ -28,7 +28,7 @@ def load_keywords_data():
     return None
 
 def extract_keywords(text):
-    """OpenAI 최신 API 사용하여 키워드 추출"""
+    """최신 OpenAI API 사용하여 키워드 추출"""
     openai.api_key = OPENAI_API_KEY
 
     saved_keywords = load_keywords_data()
@@ -39,11 +39,13 @@ def extract_keywords(text):
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=[{"role": "system", "content": "You are a professional English teacher."},
-                  {"role": "user", "content": prompt}]
+        messages=[
+            {"role": "system", "content": "You are a professional English teacher."},
+            {"role": "user", "content": prompt}
+        ]
     )
 
-    keywords = response.choices[0].message["content"].strip().split("\n")
+    keywords = response.choices[0].message.content.strip().split("\n")
 
     save_keywords_data(keywords)
     return keywords

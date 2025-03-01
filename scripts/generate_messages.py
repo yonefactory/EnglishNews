@@ -4,12 +4,12 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import config
 
-from fetch_news import fetch_valid_news_data
+from fetch_news import get_top_cnn_news
 from extract_keywords import extract_keywords
 
 def create_message():
     """CNN 뉴스 데이터를 가져와 학습 메시지를 생성"""
-    news_title, news_url, news_content = fetch_valid_news_data()
+    news_title, news_content, news_url = get_top_cnn_news()
     if not news_title or news_content == "No Summary Available":
         return "오늘의 뉴스 기사를 가져오지 못했습니다."
 

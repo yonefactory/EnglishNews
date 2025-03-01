@@ -1,0 +1,29 @@
+name: Telegram English Study
+
+on:
+  schedule:
+    - cron: "0 22 * * *"  # 한국 오전 7시 (UTC 기준 22시)
+    - cron: "0 2 * * *"   # 한국 오전 11시 (UTC 기준 2시)
+    - cron: "0 7 * * *"   # 한국 오후 4시 (UTC 기준 7시)
+    - cron: "0 10 * * *"  # 한국 오후 7시 (UTC 기준 10시)
+
+jobs:
+  send-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Telegram Message Script
+        run: python main.py
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

@@ -1,3 +1,9 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+import config
+
 from fetch_news import get_top_bbc_news
 from extract_keywords import extract_keywords
 

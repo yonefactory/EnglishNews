@@ -23,7 +23,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run Telegram Message Script
-        run: python main.py
+        run: python scripts/main.py
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

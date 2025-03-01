@@ -6,32 +6,48 @@ import config
 import requests
 from bs4 import BeautifulSoup
 
-BBC_URL = "https://www.bbc.com/news"
+CNN_URL = "https://edition.cnn.com/world"
 
-def get_top_bbc_news():
-    """BBC 뉴스 홈페이지에서 가장 중요한 기사를 가져온다."""
-    response = requests.get(BBC_URL)
-    if response.status_code != 200:
+def get_top_cnn_news():
+    """CNN 국제 뉴스 홈페이지에서 가장 중요한 기사를 가져온다."""
+    try:
+        response = requests.get(CNN_URL, headers={"User-Agent": "Mozilla/5.0"})
+        response.raise_for_status()
+    except requests.RequestException as e:
+        print(f"🚨 CNN 뉴스 페이지 로딩 실패: {e}")
         return None
 
     soup = BeautifulSoup(response.text, "html.parser")
 
-    top_article = soup.select_one(".gs-c-promo-heading")
-    if not top_article:
+    # 최신 뉴스 기사 찾기
+    top_article = soup.find("a", class_="container__link")
+    if not top_article or not top_article.get("href"):
+        print("🚨 CNN 뉴스 기사를 찾을 수 없습니다.")
         return None
 
     title = top_article.text.strip()
-    link = BBC_URL + top_article["href"]
+    link = "https://edition.cnn.com" + top_article["href"]
 
-    article_response = requests.get(link)
+    # 기사 본문 가져오기
+    try:
+        article_response = requests.get(link, headers={"User-Agent": "Mozilla/5.0"})
+        article_response.raise_for_status()
+    except requests.RequestException:
+        print("🚨 CNN 뉴스 본문 요청 실패")
+        return None
+
     article_soup = BeautifulSoup(article_response.text, "html.parser")
+    paragraphs = article_soup.find_all("p")
 
-    paragraphs = article_soup.select("article p")
-    content = " ".join([p.text.strip() for p in paragraphs[:5]])  # 첫 5개 문단 요약
+    content = " ".join([p.text.strip() for p in paragraphs[:5]]) if paragraphs else None
+
+    if not content:
+        print("🚨 CNN 뉴스 본문을 찾을 수 없습니다.")
+        return None
 
     return {"title": title, "content": content, "url": link}
 
 if __name__ == "__main__":
-    news = get_top_bbc_news()
+    news = get_top_cnn_news()
     if news:
         print(f"Title: {news['title']}\nContent: {news['content']}\nURL: {news['url']}")

@@ -6,6 +6,9 @@ from config import OPENAI_API_KEY
 
 KEYWORDS_DATA_PATH = "data/keywords.json"
 
+# OpenAI 클라이언트 인스턴스 생성
+client = openai.OpenAI(api_key=OPENAI_API_KEY)
+
 def save_keywords_data(keywords):
     """추출된 키워드를 JSON 파일에 저장"""
     data = {
@@ -27,29 +30,28 @@ def load_keywords_data():
         return data["keywords"]
     return None
 
-def extract_keywords(text):
+def extract_keywords(text, model="gpt-3.5-turbo"):
     """최신 OpenAI API 사용하여 키워드 추출"""
-    openai.api_key = OPENAI_API_KEY
-
+    
     saved_keywords = load_keywords_data()
     if saved_keywords:
         return saved_keywords  # 기존 데이터 사용
 
     prompt = f"Extract 5 essential English business-related keywords, phrases, or idioms from the following summary:\n\n{text}\n\nProvide meanings in Korean."
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+    response = client.chat.completions.create(
+        model=model,
         messages=[
             {"role": "system", "content": "You are a professional English teacher."},
             {"role": "user", "content": prompt}
         ]
     )
 
-    # 최신 OpenAI API는 content 접근 방식이 변경됨
-    keywords = response.choices[0].message["content"].strip().split("\n")
+    keywords = response.choices[0].message.content.strip().split("\n")
 
     save_keywords_data(keywords)
     return keywords
 
 if __name__ == "__main__":
-    print(extract_keywords("The rift between Ukrainian leader Zelensky and American elites has caused uncertainty."))
+    input_text = "The rift between Ukrainian leader Zelensky and American elites has caused uncertainty."
+    print(extract_keywords(input_text))

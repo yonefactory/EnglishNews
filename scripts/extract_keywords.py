@@ -45,7 +45,8 @@ def extract_keywords(text):
         ]
     )
 
-    keywords = response.choices[0].message.content.strip().split("\n")
+    # 최신 OpenAI API는 content 접근 방식이 변경됨
+    keywords = response.choices[0].message["content"].strip().split("\n")
 
     save_keywords_data(keywords)
     return keywords
